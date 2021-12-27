@@ -9,35 +9,21 @@ pipeline {
             }
             steps {
                 sh 'python -m py_compile add2vals.py calc.py'
+                stash(name: 'compiled-results', includes: '*.py*')
             }
         }
-        stage('Test') {
+        stage('Test') { 
             agent {
                 docker {
-                    image 'qnib/pytest'
+                    image 'qnib/pytest' 
                 }
             }
             steps {
-                sh 'py.test --verbose --junit-xml test-reports/results.xml test_calc.py'
+                sh 'py.test --junit-xml test-reports/results.xml test_calc.py' 
             }
             post {
                 always {
-                    junit 'test-reports/results.xml'
-                }
-            }
-        }
-        stage('Deliver') {
-            agent {
-                docker {
-                    image 'cdrx/pyinstaller-linux:python2'
-                }
-            }
-            steps {
-                sh 'pyinstaller --onefile add2vals.py'
-            }
-            post {
-                success {
-                    archiveArtifacts 'dist/add2vals'
+                    junit 'test-reports/results.xml' 
                 }
             }
         }

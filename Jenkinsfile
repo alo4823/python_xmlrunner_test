@@ -1,8 +1,7 @@
 pipeline {
-	agent none
+	agent { docker { image 'python:3.10.1-alpine' } }
 	stages{
 		stage("Run Python Test") {
-			agent { docker { image 'python:3.7.2' } } 
 			steps {
 				sh "python tests.py"
 			}
